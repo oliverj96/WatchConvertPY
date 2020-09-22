@@ -4,30 +4,37 @@ import time
 import sys
 import os
 
-if __name__ == "__main__":
-    # Prompt for input folder
-    input('Hit enter to select input folder.')
-    input_path = filedialog.askdirectory(title='Select Input Folder')
 
-    # Prompt for output folder
-    input('Hit enter to select output folder.')
+if __name__ == "__main__":
+    # Prompt for input and output folder
+    input('Hit enter to select input and output folder.')
+    input_path = filedialog.askdirectory(title='Select Input Folder')
     output_path = filedialog.askdirectory(title='Select Output Folder')
+
+    # If directories are the same, ask user for different directories
+    while input_path == output_path:
+        input('Directories cannot be the same. Hit enter to select input and output folder.')    
+        input_path = filedialog.askdirectory(title='Select Input Folder')
+        output_path = filedialog.askdirectory(title='Select Output Folder')
 
     print('Watching {}'.format(input_path))
 
-    time_waited = 0
+    time_waited = 0  # time since last process (seconds)
     # Try/catch Keyboard interrupt
     try:
         while True:
             # Check for changes in input folder
-            changes = False
+            files = os.listdir(input_path)
 
             # If changes have occured, then process
-            if changes:
-                # Convert
+            if len(files) > 0:
+                print('\nFiles detected: {}'.format(files))
+                # Convert each file
+                for curr_file in files:
+                    print('Converting {}'.format(curr_file))
 
                 # Move file
-                pass
+                time_waited = 0
             # Else wait then continue checking
             else:
                 time.sleep(1)  # wait two seconds
@@ -39,6 +46,3 @@ if __name__ == "__main__":
             sys.exit(0)
         except SystemExit:
             os._exit(0)
-    # Begin Loop
-    pass
-    
