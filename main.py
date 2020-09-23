@@ -5,6 +5,8 @@ import sys
 import os
 import moviepy.editor as moviepy
 from pathlib import Path
+import shutil
+
 
 if __name__ == "__main__":
     # Prompt for input and output folder
@@ -14,9 +16,12 @@ if __name__ == "__main__":
 
     # If directories are the same, ask user for different directories
     while input_path == output_path:
-        input('Directories cannot be the same. Hit enter to select input and output folder.')    
+        input('Directories cannot be the same. Hit enter to select input and output folder.')
         input_path = filedialog.askdirectory(title='Select Input Folder')
         output_path = filedialog.askdirectory(title='Select Output Folder')
+
+    # Name for invalid path (might not be created if not needed)
+    invalid_path = os.path.join(output_path, 'invalid')
 
     print('Watching {}'.format(input_path))
 
@@ -43,13 +48,18 @@ if __name__ == "__main__":
                     full_out = os.path.join(output_path, new_name)
 
                     # Convert file
-                    clip = moviepy.VideoFileClip(full_path)
-                    clip.write_videofile(full_out)
-
-                    # Finish
-                    print('Done.\n')
-                    os.remove(full_path)
-                # Move file
+                    try:
+                        clip = moviepy.VideoFileClip(full_path)
+                        clip.write_videofile(full_out)
+                        clip.close()
+                        # Finish
+                        print('Done.\n')
+                        os.remove(full_path)
+                    except:
+                        if not os.path.exists(invalid_path):
+                            os.makedirs(invalid_path)
+                        print('Invalid file. Moving to output/invalid')
+                        shutil.move(full_path, os.path.join(invalid_path, curr_file))
                 time_waited = 0
             # Else wait then continue checking
             else:
@@ -62,3 +72,4 @@ if __name__ == "__main__":
             sys.exit(0)
         except SystemExit:
             os._exit(0)
+
