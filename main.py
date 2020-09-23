@@ -3,7 +3,7 @@ from tkinter import filedialog
 import time
 import sys
 import os
-
+import moviepy.editor as moviepy
 
 if __name__ == "__main__":
     # Prompt for input and output folder
@@ -32,7 +32,12 @@ if __name__ == "__main__":
                 # Convert each file
                 for curr_file in files:
                     print('Converting {}'.format(curr_file))
-
+                    full_path = os.path.join(input_path, curr_file)
+                    full_out = os.path.join(output_path, 'test.mp4')
+                    clip = moviepy.VideoFileClip(full_path)
+                    clip.write_videofile(full_out)
+                    print('Done.\n')
+                    os.remove(full_path)
                 # Move file
                 time_waited = 0
             # Else wait then continue checking
