@@ -4,6 +4,7 @@ import time
 import sys
 import os
 import moviepy.editor as moviepy
+from pathlib import Path
 
 if __name__ == "__main__":
     # Prompt for input and output folder
@@ -28,14 +29,24 @@ if __name__ == "__main__":
 
             # If changes have occured, then process
             if len(files) > 0:
-                print('\nFiles detected: {}'.format(files))
+                print('\nFile(s) detected: {}'.format(files))
                 # Convert each file
                 for curr_file in files:
+                    # Print current file
                     print('Converting {}'.format(curr_file))
+
+                    # Get full input path
                     full_path = os.path.join(input_path, curr_file)
-                    full_out = os.path.join(output_path, 'test.mp4')
+
+                    # Get new output path
+                    new_name = Path(curr_file).stem + '.mp4'
+                    full_out = os.path.join(output_path, new_name)
+
+                    # Convert file
                     clip = moviepy.VideoFileClip(full_path)
                     clip.write_videofile(full_out)
+
+                    # Finish
                     print('Done.\n')
                     os.remove(full_path)
                 # Move file
